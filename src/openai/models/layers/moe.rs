@@ -690,6 +690,7 @@ pub struct FusedMoeFp8 {
     block_size: Vec<usize>,
 }
 
+// the func is running.
 impl FusedMoeFp8 {
     pub fn new(
         cfg: &Config,
@@ -976,6 +977,7 @@ impl FusedMoeFp8 {
             self.block_size[0],
             self.block_size[1],
             is_prefill,
+            &Some(topk_ids.clone()),
         )?;
 
         let gate = gate_up
@@ -998,6 +1000,7 @@ impl FusedMoeFp8 {
             self.block_size[0],
             self.block_size[1],
             is_prefill,
+            &Some(topk_ids),
         )?
         .reshape((num_tokens, (), hidden_dim))?
         .sum(D::Minus2)?;
