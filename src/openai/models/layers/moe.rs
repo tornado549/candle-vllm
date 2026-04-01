@@ -941,7 +941,9 @@ impl FusedMoeFp8 {
             self.num_experts_per_tok,
         )?;
 
-        if self.norm_topk_prob {
+        let num_gate_experts = self.gate.weight().dim(0)?;
+        let choreo_route_used = num_gate_experts == 256 && self.num_experts_per_tok == 8;
+        if self.norm_topk_prob && !choreo_route_used {
             topk_weights = topk_weights.broadcast_div(&topk_weights.sum_keepdim(D::Minus1)?)?;
         }
         if let Some(routed_scaling_factor) = self.routed_scaling_factor {
